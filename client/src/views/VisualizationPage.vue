@@ -1,5 +1,3 @@
-<!-- src/views/VisualizationPage.vue -->
-
 <template>
     <div>
         <h1>Visualization Page</h1>
@@ -14,5 +12,4 @@ export default {
 </script>
 
 <style scoped>
-/* You may add styles specific to this page here */
 </style>

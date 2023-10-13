@@ -1,4 +1,3 @@
-// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 import Navigation from '@/components/Navigation.vue';
 import VisualizationPage from '@/views/VisualizationPage.vue';
