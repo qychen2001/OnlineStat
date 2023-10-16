@@ -53,7 +53,8 @@ export default {
 
 .main-content {
     display: flex;
-    flex-direction: column;  /* stack items vertically */
+    flex-direction: column;
+    /* stack items vertically */
     align-items: center;
     justify-content: center;
     min-height: calc(100vh - 140px);
@@ -61,24 +62,28 @@ export default {
 
 .button-group {
     display: flex;
-    flex-direction: row; /* arrange buttons horizontally */
+    flex-direction: row;
+    /* arrange buttons horizontally */
     align-items: center;
     justify-content: center;
-    gap: 15px; /* provides space between buttons */
+    gap: 15px;
+    /* provides space between buttons */
 }
 
 .app-button {
     /* other styles remain unchanged */
-    flex: 1; 
-    max-width: 200px; 
+    flex: 1;
+    max-width: 200px;
     text-align: center;
 }
 
 .your-image-class {
-    width: 50%;  
-    height: auto; 
-    margin-bottom: 20px; /* space below the image */
+    width: 50%;
+    height: auto;
+    margin-bottom: 20px;
+    /* space below the image */
 }
+
 .el-footer {
     text-align: center;
     padding: 10px;
