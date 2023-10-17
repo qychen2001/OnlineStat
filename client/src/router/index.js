@@ -3,6 +3,7 @@ import Navigation from '@/components/Navigation.vue';
 import VisualizationPage from '@/views/VisualizationPage.vue';
 import AnalysisPage from '@/views/AnalysisPage.vue';
 import UploadPage from '@/components/UploadFile.vue'
+import DataTableComponent from '@/components/DataTableComponent.vue'
 
 const routes = [
   {
@@ -11,7 +12,7 @@ const routes = [
     component: Navigation
   },
   {
-    path: '/visualization',
+    path: '/visual',
     name: 'Visualization',
     component: VisualizationPage
   },
@@ -24,6 +25,11 @@ const routes = [
     path: '/upload',
     name: 'Upload',
     component: UploadPage
+  },
+  {
+    path: '/table',
+    name: 'DataTable',
+    component: DataTableComponent
   }
 ];
 

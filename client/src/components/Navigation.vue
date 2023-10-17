@@ -1,26 +1,21 @@
 <template>
-    <el-container>
+    <el-container class="custom-container">
         <el-header>
             <h1 class="app-title">OnlineStat: 一个在线统计分析平台</h1>
         </el-header>
 
         <el-main class="main-content">
-            <img src="@/assets/BigData.png" alt="Descriptive text" class="your-image-class" />
-            <div>
+            <div v-if="!showTable">
+                <img src="@/assets/BigData.png" alt="Descriptive text" class="index-image-class" />
                 <p class="btn-description">点击下方的按钮来上传您的文件。确保文件格式正确，以便于我们为您处理和分析。</p>
-            </div>
-            <div>
-                <el-upload ref="upload" action="http://localhost:5000/upload"
+                <el-upload class="custom-upload" ref="upload" action="http://localhost:5000/upload"
                     accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                     :on-success="handleSuccess" :on-error="handleError" :before-upload="beforeUpload">
                     <el-button slot="trigger" type="primary" class="upload-btn">点击上传</el-button>
                 </el-upload>
-
-                <!-- 数据表格展示区域 -->
-                <el-table :data="tableData" style="width: 100%" v-if="tableData.length">
-                    <el-table-column v-for="(item, index) in columns" :key="index" :prop="item"
-                        :label="item"></el-table-column>
-                </el-table>
+            </div>
+            <div v-else>
+                <DataTableComponent />
             </div>
         </el-main>
 
@@ -34,12 +29,22 @@
 
 <script>
 import { ref } from "vue";
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import DataTableComponent from './DataTableComponent.vue';
 
 export default {
     name: "UploadComponent",
+    components: {
+        DataTableComponent
+    },
     setup() {
         const tableData = ref([]);
         const columns = ref([]);
+        const store = useStore();
+        const showTable = ref(false);
+        const router = useRouter();
+
 
         const handleSuccess = (response) => {
             let parsedData;
@@ -56,9 +61,10 @@ export default {
             }
 
             if (parsedData && typeof parsedData.data === "object" && Array.isArray(parsedData.data)) {
-                tableData.value = parsedData.data;
                 if (parsedData.data.length > 0) {
-                    columns.value = Object.keys(parsedData.data[0]);
+                    showTable.value = true;
+                    store.dispatch('updateTableData', response.data);
+                    router.push({ name: 'DataTable' });
                 }
             } else {
                 console.error("Unexpected server response format:", parsedData);
@@ -85,8 +91,8 @@ export default {
         };
 
         return {
-            tableData,
             columns,
+            showTable,
             handleSuccess,
             handleError,
             beforeUpload,
@@ -96,11 +102,31 @@ export default {
 </script>
 
 <style scoped>
-.el-header {
-    text-align: center;
-    padding: 20px;
-    background-color: #f8f8f8;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+.custom-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.el-header,
+.el-main,
+.el-footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-content {
+    width: 80%;
+    /* 你可以根据需要调整这个宽度 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .app-title {
@@ -109,40 +135,21 @@ export default {
     font-size: 24px;
 }
 
-.main-content {
+.custom-upload {
     display: flex;
-    flex-direction: column;
-    /* stack items vertically */
-    align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 140px);
+    align-items: center;
+    width: 100%;
 }
 
 .upload-btn {
-    background-color: #3498db;
-    color: #ffffff;
-    border-radius: 5px;
-    padding: 20px 30px;
-    font-size: 30px;
-    transition: background-color 0.3s;
+    margin: auto;
 }
+
 
 .btn-description {
     font-size: 20px;
-}
-
-.your-image-class {
-    width: 50%;
-    height: auto;
-    margin-bottom: 20px;
-    /* space below the image */
-}
-
-.el-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #f8f8f8;
-    box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1);
+    align-items: center;
 }
 
 .footer-text {
