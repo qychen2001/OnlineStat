@@ -78,12 +78,13 @@ export default {
 
 <style>
 .el-container {
-    height: 100%;
+    height: 100vh;
+    display: flex;
 }
 
 .el-header,
 .el-footer {
-    background-color: #e5eaf3;
+    /* background-color: #e5eaf3; */
     color: #409eff;
     text-align: center;
     line-height: 60px;
@@ -100,8 +101,18 @@ export default {
 }
 
 .el-main {
-    background-color: #e5eaf3;
     color: #409eff;
     text-align: center;
+    display: flex;
+    align-items: center;
+    /* 垂直居中 */
+}
+
+.el-aside {
+    color: #409EFF;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    /* 垂直居中 */
 }
 </style>

@@ -1,27 +1,55 @@
 <template>
-    <div>
-        <h1>Statistical Analysis Page</h1>
-        <p>This is the statistical analysis page.</p>
+    <el-container>
+        <el-header>OnlineStat: 一个在线统计分析平台</el-header>
 
-        <div>
-            <el-form ref="form" :model="form" label-width="120px">
-                <el-form-item label="Choose a column:">
-                    <el-select v-model="selectedColumn" placeholder="Please select" @change="getStats">
-                        <el-option v-for="item in columns" :key="item" :label="item" :value="item"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-        </div>
+        <el-aside>
+            <el-menu default-active="2">
+                <el-sub-menu index="1">
+                    <template #title>
+                        <span>描述性统计</span>
+                    </template>
+                    <el-menu-item-group title="Group One">
+                        <el-menu-item index="1-1">均值</el-menu-item>
+                        <el-menu-item index="1-2">item two</el-menu-item>
+                    </el-menu-item-group>
+                    <el-menu-item-group title="Group Two">
+                        <el-menu-item index="1-3">item three</el-menu-item>
+                    </el-menu-item-group>
+                    <el-sub-menu index="1-4">
+                        <template #title>item four</template>
+                        <el-menu-item index="1-4-1">item one</el-menu-item>
+                    </el-sub-menu>
+                </el-sub-menu>
 
-        <div v-if="stats">
-            <h2>Statistics</h2>
-            <p><strong>Mean:</strong> {{ stats.mean }}</p>
-            <p><strong>Median:</strong> {{ stats.median }}</p>
-            <p><strong>Min:</strong> {{ stats.min }}</p>
-            <p><strong>Max:</strong> {{ stats.max }}</p>
-            <p><strong>Quartiles:</strong> {{ stats.quartiles }}</p>
-        </div>
-    </div>
+
+                <el-sub-menu index="2">
+                        <template #title>
+                            <span>机器学习</span>
+                        </template>
+                        <el-menu-item-group title="Group One">
+                            <el-menu-item index="1-1">item one</el-menu-item>
+                            <el-menu-item index="1-2">item two</el-menu-item>
+                        </el-menu-item-group>
+                        <el-menu-item-group title="Group Two">
+                            <el-menu-item index="1-3">item three</el-menu-item>
+                        </el-menu-item-group>
+                        <el-sub-menu index="1-4">
+                            <template #title>item four</template>
+                            <el-menu-item index="1-4-1">item one</el-menu-item>
+                        </el-sub-menu>
+                    </el-sub-menu>
+            </el-menu>
+        </el-aside>
+
+
+        <el-main>
+
+        </el-main>
+
+
+
+        <el-footer>©2023 由陈启源开发</el-footer>
+    </el-container>
 </template>
 
 <script>

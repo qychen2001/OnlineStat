@@ -1,15 +1,13 @@
 <template>
     <!-- 数据表格展示区域 -->
-    <el-table :data="data" style="width: 100%">
+    <el-table :data="data" class="table-container">
         <el-table-column v-for="(item, index) in columns" :key="index" :prop="item" :label="item"
             :min-width="100"></el-table-column>
     </el-table>
 
-    <div>
-        <router-link to="/visual"> <!-- 使用 router-link 组件实现跳转 -->
-            <el-button type="primary">
-                可视化分析
-            </el-button>
+    <div class="button-container">
+        <router-link to="/visual">
+            <el-button type="primary">可视化分析</el-button>
         </router-link>
         <router-link to="/analysis">
             <el-button type="success">统计分析</el-button>
@@ -46,4 +44,19 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.table-container {
+    height: 90%;
+    overflow: auto;
+    justify-content: center;
+    background-color: #eef5ff;
+}
+
+.button-container {
+    margin-top: 16px;
+    display: flex;
+    /*居中显示*/
+    justify-content: center;
+    gap: 10px;
+}
+</style>
