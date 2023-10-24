@@ -14,7 +14,6 @@
         </div>
 
         <div v-if="stats">
-            <h2>Statistics</h2>
             <p><strong>Mean:</strong> {{ stats.mean }}</p>
             <p><strong>Median:</strong> {{ stats.median }}</p>
             <p><strong>Min:</strong> {{ stats.min }}</p>
@@ -56,14 +55,10 @@ export default {
             } catch (error) {
                 console.error("An error occurred while fetching the stats", error);
                 if (error.response) {
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
                     console.error("Error response data:", error.response.data);
                 } else if (error.request) {
-                    // The request was made but no response was received
                     console.error("Error request data:", error.request);
                 } else {
-                    // Something happened in setting up the request that triggered an Error
                     console.error("Error message:", error.message);
                 }
             }
