@@ -19,7 +19,7 @@ import { ref } from "vue";
 export default {
     name: "UploadComponent",
     setup() {
-        const tableData = ref([]);
+        const tableData = ref([]); // 动态绑定
         const columns = ref([]);
 
         const handleSuccess = (response) => {
