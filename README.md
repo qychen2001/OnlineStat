@@ -5,7 +5,9 @@
 
 - [x] 实现文件上传的前后端
 - [x] 实现数据展示与功能选择
-- [ ] 可视化……
+- [x] 数据简单可视化
+- [ ] 数据可视化的进阶
+- [ ] 数据分析...
 
 ## Requirements
 
@@ -26,6 +28,13 @@ flask
 scikit-learn
 matplotlib
 ```
+
+### 依赖安装
+
+1. 安装python和node.js（看百度）
+2. 前端安装：进入client文件夹，执行`npm install`，安装依赖
+3. 最后执行`npm install @antv/g2plot element-plus --save` 保存到本地
+4. 然后安装python环境，执行`pip install flask scikit-learn matplotlib openpyxl flask-cors pandas`安装依赖
 
 ## 启动方法
 
