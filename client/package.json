@@ -8,8 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@antv/g2plot": "^2.4.31",
     "axios": "^1.5.1",
-    "element-plus": "^2.3.14",
+    "element-plus": "^2.4.1",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
     "vuex": "^4.1.0"

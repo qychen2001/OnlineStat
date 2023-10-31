@@ -44,13 +44,15 @@ def upload_file():
             try:
                 data = pd.read_excel(filename).reset_index(drop=True)
             except Exception as e:
-                return jsonify(error="Unable to read Excel file"), 400
+                # return jsonify(error="Unable to read Excel file"), 400
+                return jsonify(error=e), 400
 
         data = data.dropna(axis=1, how='all')  # 丢弃nan的值
 
         return jsonify(data=data.to_dict(orient='records'))
 
     return jsonify(error="Invalid file type"), 400
+
 
 @app.route('/api/stats', methods=['POST'])
 def get_stats():
@@ -65,7 +67,8 @@ def get_stats():
         return jsonify({"error": "Data is required"}), 400
 
     try:
-        values = [item[column] for item in data if column in item and isinstance(item[column], (int, float))]
+        values = [item[column] for item in data if column in item and isinstance(
+            item[column], (int, float))]
         if not values:
             return jsonify({"error": "Column not found in data or invalid data type"}), 404
 
