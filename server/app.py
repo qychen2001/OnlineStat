@@ -110,7 +110,6 @@ def get_stats():
         return jsonify({"error": "An error occurred: " + str(e)}), 500
 
 
-
 @app.route('/api/corr', methods=['POST'])
 def calculate_correlation():
     try:

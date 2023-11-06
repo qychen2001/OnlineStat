@@ -25,8 +25,8 @@
 
 <script setup>
 import {ref} from 'vue';
-import BasicStats from '@/components/analysis/BasicStats.vue';
-import CorrelationStats from "../components/analysis/CorrelationStats.vue";
+import BasicStats from '../components/analysis/BasicStats.vue';
+import CorrelationStats from '../components/analysis/CorrelationStats.vue';
 import {ElContainer, ElHeader, ElAside, ElMenu, ElMenuItem, ElMain, ElFooter} from 'element-plus';
 
 // 用于动态切换组件的响应式引用

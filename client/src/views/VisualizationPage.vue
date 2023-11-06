@@ -148,9 +148,9 @@ export default {
 
 <style scoped>
 .el-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .settings {

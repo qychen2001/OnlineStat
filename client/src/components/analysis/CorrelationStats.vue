@@ -41,6 +41,7 @@ import {ref, computed} from 'vue';
 import {useStore} from 'vuex';
 import axios from 'axios';
 import {ElMessage} from 'element-plus';
+
 const store = useStore();
 const selectedColumn1 = ref(null);
 const selectedColumn2 = ref(null);
@@ -65,6 +66,7 @@ const submitData = async () => {
       column2: selectedColumn2.value,
       data: store.state.tableData
     };
+
 
     const response = await axios.post('http://localhost:5000/api/corr', payload);
     statistics.value = response.data;
