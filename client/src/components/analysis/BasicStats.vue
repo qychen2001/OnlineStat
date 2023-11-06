@@ -1,6 +1,7 @@
 <template>
   <el-container>
-    <el-header>
+    <el-header :style="{fontsize: '12px'}">基本统计数据</el-header>
+    <el-main>
       <el-form @submit.prevent="submitData">
         <el-form-item label="选择列">
           <el-select v-model="selectedColumn" placeholder="请选择">
@@ -17,9 +18,6 @@
           <el-button type="primary" @click="submitData">提交</el-button>
         </el-form-item>
       </el-form>
-    </el-header>
-
-    <el-main>
       <!-- 条件渲染，当statistics有数据时显示 -->
       <div v-if="statistics">
         <p>平均值: {{ statistics.mean }}</p>
@@ -39,16 +37,8 @@ import axios from 'axios';
 import {ElMessage} from 'element-plus';
 
 const store = useStore();
-
-// 选择列的数据模型
 const selectedColumn = ref(null);
-
-// 存储从后端获取的统计数据
 const statistics = ref(null);
-
-// 自动获取列名
-
-
 const data = computed(() => store.state.tableData);
 const columnOptions = computed(() => {
   if (data.value.length > 0) {
@@ -56,14 +46,6 @@ const columnOptions = computed(() => {
   }
   return [];
 });
-// const columnOptions = computed(() => {
-//   // 确保数据存在且不为空
-//   if (store.state.rawData && store.state.rawData.length > 0) {
-//     // 使用Object.keys从数据的第一项获取所有键作为列名
-//     return Object.keys(store.state.rawData[0]);
-//   }
-//   return [];
-// });
 
 const submitData = async () => {
   if (!selectedColumn.value) {
@@ -74,7 +56,7 @@ const submitData = async () => {
   try {
     const payload = {
       column: selectedColumn.value,
-      data: store.state.tableData // 确保这是Vuex中的正确路径
+      data: store.state.tableData
     };
 
     const response = await axios.post('http://localhost:5000/api/stats', payload);
@@ -87,5 +69,4 @@ const submitData = async () => {
 </script>
 
 <style scoped>
-/* 你的CSS样式 */
 </style>

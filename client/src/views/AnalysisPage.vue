@@ -24,9 +24,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import BasicStats from '@/components/analysis/BasicStats.vue'; // 假设你的组件是这样导入的
-import { ElContainer, ElHeader, ElAside, ElMenu, ElMenuItem, ElMain, ElFooter } from 'element-plus';
+import {ref} from 'vue';
+import BasicStats from '@/components/analysis/BasicStats.vue';
+import CorrelationStats from "../components/analysis/CorrelationStats.vue";
+import {ElContainer, ElHeader, ElAside, ElMenu, ElMenuItem, ElMain, ElFooter} from 'element-plus';
 
 // 用于动态切换组件的响应式引用
 const activeComponent = ref('');
@@ -38,16 +39,15 @@ const activeIndex = ref('1-1'); // 假设默认显示“基本数据”
 const handleSelect = (index) => {
   switch (index) {
     case '1-1':
-      activeComponent.value = BasicStats; // 显示基本数据组件
+      activeComponent.value = BasicStats;
       break;
     case '1-2':
-      activeComponent.value = null; // 这里你可以替换为显示“相关系数”的组件
+      activeComponent.value = CorrelationStats;
       break;
-      // 其他case可以根据实际情况继续添加
     default:
       activeComponent.value = null;
   }
-  activeIndex.value = index; // 更新活跃索引，确保菜单显示正确
+  activeIndex.value = index;
 };
 
 // 初始时加载默认组件

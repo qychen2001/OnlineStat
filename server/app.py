@@ -109,25 +109,44 @@ def get_stats():
         # 详细错误消息将帮助调试
         return jsonify({"error": "An error occurred: " + str(e)}), 500
 
-@app.route('/api/correlation', methods=['POST'])
+
+
+@app.route('/api/corr', methods=['POST'])
 def calculate_correlation():
-    data = request.get_json()
-    # print(data)
-    # 假设发送的数据是一个字典，包含两个键：column1 和 column2，它们都对应着数据列表
-    column1 = data.get('column1')
-    column2 = data.get('column2')
-    if not (column1 and column2):
-        return jsonify({'error': 'Invalid input data'}), 400
-
-    if len(column1) != len(column2):
-        return jsonify({'error': 'Columns must be of the same length'}), 400
-
     try:
+        data = request.get_json()
+
+        if not data:
+            raise ValueError("没有提供数据。")
+
+        # 从数据中获取 column1 和 column2 的名称
+        column1_name = data.get('column1')
+        column2_name = data.get('column2')
+
+        # 获取传入的数据集
+        origin_data = pd.DataFrame.from_dict(data.get('data'))
+
+        if column1_name is None or column2_name is None:
+            raise ValueError("缺少必要的数据列名称。")
+
+        # 检查传入的数据中是否有这两列
+        if column1_name not in origin_data.columns or column2_name not in origin_data.columns:
+            raise ValueError("指定的列名在数据中不存在。")
+
         # 计算相关系数
-        correlation, _ = pearsonr(column1, column2)
-        return jsonify({'correlation': correlation}), 200
+        corr_coefficient, _ = pearsonr(origin_data[column1_name], origin_data[column2_name])
+
+        # 返回结果
+        return jsonify({
+            'correlation': corr_coefficient
+        })
+
+    except ValueError as ve:
+        return jsonify({'error': str(ve)}), 400
+
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        # 对于不是由 ValueError 引发的其他任何异常，我们返回500内部服务器错误
+        return jsonify({'error': '服务器内部错误: {}'.format(str(e))}), 500
 
 
 if __name__ == '__main__':
