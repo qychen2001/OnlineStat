@@ -1,5 +1,5 @@
 import numpy as np
-from tabnanny import filename_only
+from scipy.stats import pearsonr
 from flask import Flask, request, jsonify
 import pandas as pd
 import os
@@ -50,7 +50,7 @@ def upload_file():
         data = data.dropna(axis=1, how='all')  # 丢弃nan的值
         data = data.loc[:, ~data.columns.str.contains('^Unnamed')]  # 丢弃没有列名的列
 
-        print(data)
+        # print(data)
 
         return jsonify(data=data.to_dict(orient='records'))
 
@@ -60,7 +60,7 @@ def upload_file():
 @app.route('/api/stats', methods=['POST'])
 def get_stats():
     req_data = request.get_json()
-
+    # print(req_data)
     # 检查请求数据是否存在
     if not req_data:
         return jsonify({"error": "Request data is empty or not JSON"}), 400
@@ -108,6 +108,26 @@ def get_stats():
     except Exception as e:
         # 详细错误消息将帮助调试
         return jsonify({"error": "An error occurred: " + str(e)}), 500
+
+@app.route('/api/correlation', methods=['POST'])
+def calculate_correlation():
+    data = request.get_json()
+    # print(data)
+    # 假设发送的数据是一个字典，包含两个键：column1 和 column2，它们都对应着数据列表
+    column1 = data.get('column1')
+    column2 = data.get('column2')
+    if not (column1 and column2):
+        return jsonify({'error': 'Invalid input data'}), 400
+
+    if len(column1) != len(column2):
+        return jsonify({'error': 'Columns must be of the same length'}), 400
+
+    try:
+        # 计算相关系数
+        correlation, _ = pearsonr(column1, column2)
+        return jsonify({'correlation': correlation}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@
     <el-header>OnlineStat: 一个在线统计分析平台</el-header>
 
     <el-aside>
-      <el-menu default-active="1-1" @select="handleSelect" unique-opened>
+      <el-menu :default-active="activeIndex" @select="handleSelect" unique-opened>
         <el-sub-menu index="1">
           <template #title>
             <span>描述性统计</span>
@@ -11,89 +11,53 @@
           <el-menu-item index="1-1">基本数据</el-menu-item>
           <el-menu-item index="1-2">相关系数</el-menu-item>
         </el-sub-menu>
-
-        <el-sub-menu index="2">
-          <template #title>
-            <span>机器学习</span>
-          </template>
-          <!-- 添加机器学习的菜单项 -->
-        </el-sub-menu>
       </el-menu>
     </el-aside>
 
     <el-main>
-      <!-- 只有当选中 "基本数据" 时，BasicStats 组件才显示 -->
-      <BasicStats
-          v-if="activeIndex === '1-1'"
-          :columns="columns"
-          :selectedColumn="selectedColumn"
-          :stats="stats"
-          @getStats="getStats"
-          @update:selectedColumn="selectedColumn = $event"
-      />
+      <!-- 动态组件，根据 activeComponent 的值来显示不同的组件 -->
+      <component :is="activeComponent"></component>
     </el-main>
 
     <el-footer>©2023 由陈启源开发</el-footer>
   </el-container>
 </template>
 
-<script>
-import axios from "axios";
-import {ref, computed} from "vue";
-import {useStore} from "vuex";
-import BasicStats from "@/components/analysis/BasicStats.vue";
+<script setup>
+import { ref } from 'vue';
+import BasicStats from '@/components/analysis/BasicStats.vue'; // 假设你的组件是这样导入的
+import { ElContainer, ElHeader, ElAside, ElMenu, ElMenuItem, ElMain, ElFooter } from 'element-plus';
 
-export default {
-  components: {
-    BasicStats,
-  },
-  data() {
-    return {
-      activeIndex: '1-1', // 默认激活的菜单项
-    };
-  },
-  setup() {
-    const store = useStore();
-    const selectedColumn = ref("");
-    const stats = ref(null);
+// 用于动态切换组件的响应式引用
+const activeComponent = ref('');
 
-    const data = computed(() => store.state.tableData);
-    const columns = computed(() => {
-      if (data.value && data.value.length > 0) {
-        return Object.keys(data.value[0]);
-      }
-      return [];
-    });
+// 初始化默认活跃索引
+const activeIndex = ref('1-1'); // 假设默认显示“基本数据”
 
-    const getStats = async () => {
-      const requestData = {
-        column: selectedColumn.value,
-        data: data.value,
-      };
-      try {
-        const response = await axios.post("http://localhost:5000/api/stats", requestData);
-        stats.value = response.data;
-      } catch (error) {
-        console.error("An error occurred while fetching the stats:", error);
-      }
-    };
-
-    return {
-      data,
-      columns,
-      selectedColumn,
-      getStats,
-      stats,
-    };
-  },
-  methods: {
-    handleSelect(key, keyPath) {
-      this.activeIndex = key;
-    },
-  },
+// 根据菜单选择来更新 activeComponent
+const handleSelect = (index) => {
+  switch (index) {
+    case '1-1':
+      activeComponent.value = BasicStats; // 显示基本数据组件
+      break;
+    case '1-2':
+      activeComponent.value = null; // 这里你可以替换为显示“相关系数”的组件
+      break;
+      // 其他case可以根据实际情况继续添加
+    default:
+      activeComponent.value = null;
+  }
+  activeIndex.value = index; // 更新活跃索引，确保菜单显示正确
 };
+
+// 初始时加载默认组件
+handleSelect(activeIndex.value);
 </script>
 
 <style scoped>
-/* 在这里添加你的样式 */
+.el-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 </style>
