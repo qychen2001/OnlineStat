@@ -48,6 +48,9 @@ def upload_file():
                 return jsonify(error=e), 400
 
         data = data.dropna(axis=1, how='all')  # 丢弃nan的值
+        data = data.loc[:, ~data.columns.str.contains('^Unnamed')]  # 丢弃没有列名的列
+
+        print(data)
 
         return jsonify(data=data.to_dict(orient='records'))
 
@@ -57,7 +60,7 @@ def upload_file():
 @app.route('/api/stats', methods=['POST'])
 def get_stats():
     req_data = request.get_json()
-    print(req_data)
+
     # 检查请求数据是否存在
     if not req_data:
         return jsonify({"error": "Request data is empty or not JSON"}), 400
