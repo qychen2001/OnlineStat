@@ -57,20 +57,36 @@ def upload_file():
 @app.route('/api/stats', methods=['POST'])
 def get_stats():
     req_data = request.get_json()
+    print(req_data)
+    # 检查请求数据是否存在
+    if not req_data:
+        return jsonify({"error": "Request data is empty or not JSON"}), 400
+
     column = req_data.get('column')
     data = req_data.get('data')
 
+    # 检查column键是否存在
     if not column:
         return jsonify({"error": "Column is required"}), 400
 
+    # 检查data键是否存在
     if not data:
         return jsonify({"error": "Data is required"}), 400
 
+    # 检查data是否为列表
+    if not isinstance(data, list):
+        return jsonify({"error": "Data should be a list"}), 400
+
+    # 检查列表中的项目是否为字典
+    if not all(isinstance(item, dict) for item in data):
+        return jsonify({"error": "All items in data should be dictionaries"}), 400
+
     try:
-        values = [item[column] for item in data if column in item and isinstance(
-            item[column], (int, float))]
+        # 获取具有有效数值类型的数据列
+        values = [item.get(column) for item in data if isinstance(item.get(column), (int, float))]
+
         if not values:
-            return jsonify({"error": "Column not found in data or invalid data type"}), 404
+            return jsonify({"error": "Column not found in data or contains no valid numeric data"}), 404
 
         values = np.array(values)
         mean = np.mean(values)
@@ -87,7 +103,8 @@ def get_stats():
             "quartiles": quartiles.tolist(),
         })
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        # 详细错误消息将帮助调试
+        return jsonify({"error": "An error occurred: " + str(e)}), 500
 
 
 if __name__ == '__main__':
