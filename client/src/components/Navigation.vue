@@ -110,9 +110,9 @@ export default {
 
 .el-aside {
     color: #409EFF;
-    text-align: center;
-    display: flex;
-    align-items: center;
+    //text-align: center;
+    //display: flex;
+    //align-items: center;
     /* 垂直居中 */
 }
 </style>
