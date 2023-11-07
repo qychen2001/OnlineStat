@@ -11,6 +11,20 @@
           <el-menu-item index="1-1">基本数据</el-menu-item>
           <el-menu-item index="1-2">相关系数</el-menu-item>
         </el-sub-menu>
+
+
+        <el-sub-menu index="2">
+          <template #title>
+            <span>机器学习</span>
+          </template>
+          <el-menu-item-group title="分类">
+            <el-menu-item index="2-1">决策树</el-menu-item>
+            <el-menu-item index="2-2">Logistic回归</el-menu-item>
+          </el-menu-item-group>
+          <el-menu-item-group title="回归">
+            <el-menu-item index="2-3">线性回归</el-menu-item>
+          </el-menu-item-group>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
 
@@ -27,7 +41,7 @@
 import {ref} from 'vue';
 import BasicStats from '../components/analysis/BasicStats.vue';
 import CorrelationStats from '../components/analysis/CorrelationStats.vue';
-import {ElContainer, ElHeader, ElAside, ElMenu, ElMenuItem, ElMain, ElFooter} from 'element-plus';
+import {ElContainer, ElHeader, ElAside, ElMenu, ElMenuItem, ElMain, ElFooter, ElSubMenu} from 'element-plus';
 
 // 用于动态切换组件的响应式引用
 const activeComponent = ref('');
