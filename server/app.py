@@ -7,6 +7,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from scipy.stats import pearsonr
 from sklearn.linear_model import LinearRegression
+# 评估指标
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import DecisionTreeClassifier
 
 app = Flask(__name__)
 CORS(app)
@@ -241,6 +245,97 @@ def linear_regression():
     except Exception as e:
         # 异常处理
         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/dt', methods=['POST'])
+def decision_tree():
+    data = request.get_json()
+
+    # 判断是训练还是预测
+    try:
+        features = data['features']
+        target = data['target']
+        raw_data = data['data']
+        df = pd.DataFrame(raw_data)
+        df_features = df[features]
+
+        # 目标值的编码器
+        label_encoder = LabelEncoder()
+
+        # 训练模型
+        X = df_features
+        y = label_encoder.fit_transform(df[target])  # 对目标列编码
+        clf = DecisionTreeClassifier()
+        clf.fit(X, y)
+
+        # 得到决策树的分类准确率，P，R，F1
+        y_pred = clf.predict(X)
+        accuracy = accuracy_score(y, y_pred)
+        precision = precision_score(y, y_pred, average='macro')
+        recall = recall_score(y, y_pred, average='macro')
+        f1 = f1_score(y, y_pred, average='macro')
+
+        # 返回模型的基本信息，例如叶子数量等
+        tree = clf.tree_
+        leaf_count = tree.node_count
+        max_depth = tree.max_depth
+
+        result = {
+            'accuracy': accuracy,
+            'precision': precision,
+            'recall': recall,
+            'f1': f1,
+            'leafCount': leaf_count,
+            'maxDepth': max_depth,
+            'message': '决策树模型训练成功'
+        }
+
+        # 保存模型和编码器
+        model_path = 'models/decision_tree.pkl'
+        encoder_path = 'models/label_encoder.pkl'
+        if not os.path.exists('models'):
+            os.makedirs('models')
+        with open(model_path, 'wb') as model_file:
+            pickle.dump(clf, model_file)
+        with open(encoder_path, 'wb') as encoder_file:
+            pickle.dump(label_encoder, encoder_file)
+
+        return jsonify(result), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/dt/predict', methods=['POST'])
+def predict():
+    data = request.get_json()
+    features = data['features']
+    predict_values = data['predictValues']
+    model_path = 'models/decision_tree.pkl'
+    encoder_path = 'models/label_encoder.pkl'
+
+    if not os.path.exists(model_path) or not os.path.exists(encoder_path):
+        return jsonify({'error': '模型尚未训练，请先训练模型'}), 400
+
+    # 加载模型和编码器
+    with open(model_path, 'rb') as model_file:
+        clf = pickle.load(model_file)
+    with open(encoder_path, 'rb') as encoder_file:
+        label_encoder = pickle.load(encoder_file)
+
+    try:
+        # 预测
+        predict_df = pd.DataFrame([predict_values])
+        prediction_numeric = clf.predict(predict_df)
+        prediction = label_encoder.inverse_transform(prediction_numeric)  # 将数值结果转换回字符串
+
+        return jsonify({
+            'prediction': prediction[0],
+            'message': '预测成功完成'
+        }), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e), 'message': '预测失败'}), 500
 
 
 if __name__ == '__main__':

@@ -44,6 +44,7 @@ import {ref} from 'vue';
 import BasicStats from '../components/analysis/BasicStats.vue';
 import CorrelationStats from '../components/analysis/CorrelationStats.vue';
 import LinearRegression from '../components/analysis/LinearRegression.vue';
+import DecisionTree from '../components/analysis/DecisionTree.vue';
 import {ElAside, ElContainer, ElFooter, ElHeader, ElMain, ElMenu, ElMenuItem, ElSubMenu} from 'element-plus';
 
 // 用于动态切换组件的响应式引用
@@ -60,6 +61,9 @@ const handleSelect = (index) => {
       break;
     case '1-2':
       activeComponent.value = CorrelationStats;
+      break;
+    case '2-1':
+      activeComponent.value = DecisionTree;
       break;
     case '2-3':
       activeComponent.value = LinearRegression;
