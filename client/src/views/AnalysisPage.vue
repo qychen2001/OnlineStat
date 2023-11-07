@@ -44,7 +44,7 @@ import {ref} from 'vue';
 import BasicStats from '../components/analysis/BasicStats.vue';
 import CorrelationStats from '../components/analysis/CorrelationStats.vue';
 import LinearRegression from '../components/analysis/LinearRegression.vue';
-import {ElContainer, ElHeader, ElAside, ElMenu, ElMenuItem, ElMain, ElFooter, ElSubMenu} from 'element-plus';
+import {ElAside, ElContainer, ElFooter, ElHeader, ElMain, ElMenu, ElMenuItem, ElSubMenu} from 'element-plus';
 
 // 用于动态切换组件的响应式引用
 const activeComponent = ref('');
@@ -80,8 +80,6 @@ handleSelect(activeIndex.value);
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 50%; /* 或具体大小，根据需要 */
-  height: 50%; /* 或具体大小，根据需要 */
-  margin-top: 100px;
+  margin-top: 50px;
 }
 </style>

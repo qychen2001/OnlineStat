@@ -1,9 +1,12 @@
-import numpy as np
-from scipy.stats import pearsonr
-from flask import Flask, request, jsonify
-import pandas as pd
 import os
+import pickle
+
+import numpy as np
+import pandas as pd
+from flask import Flask, request, jsonify
 from flask_cors import CORS
+from scipy.stats import pearsonr
+from sklearn.linear_model import LinearRegression
 
 app = Flask(__name__)
 CORS(app)
@@ -146,6 +149,98 @@ def calculate_correlation():
     except Exception as e:
         # 对于不是由 ValueError 引发的其他任何异常，我们返回500内部服务器错误
         return jsonify({'error': '服务器内部错误: {}'.format(str(e))}), 500
+
+
+@app.route('/api/lr', methods=['POST'])
+def linear_regression():
+    # 判断是预测请求还是训练请求
+    request_type = request.args.get('type')
+
+    try:
+        # 解析请求数据
+        data = request.get_json()
+
+        if request_type == 'train':
+            column_x = data['columnX']
+            column_y = data['columnY']
+            use_intercept = data['useIntercept']
+            raw_data = data['data']
+
+            # 将数据转换为pandas DataFrame
+            df = pd.DataFrame(raw_data)
+
+            # 检查X列和Y列是否存在
+            if not all(x in df.columns for x in column_x) or column_y not in df.columns:
+                return jsonify({'error': '所选的列不存在于数据中'}), 400
+
+            # 创建线性回归模型
+            lin_reg = LinearRegression(fit_intercept=use_intercept)
+
+            # 训练模型
+            X = df[column_x]
+            y = df[column_y]
+            lin_reg.fit(X, y)
+
+            # 获取回归统计信息
+            coefficients = lin_reg.coef_.tolist()
+            intercept = lin_reg.intercept_
+            score = lin_reg.score(X, y)
+
+            # 保存模型到文件，方便用于预测
+            model_path = 'models/lin_reg.pkl'
+            if not os.path.exists('models'):
+                os.mkdir('models')
+            with open(model_path, 'wb') as f:
+                pickle.dump(lin_reg, f)
+
+            result = {
+                'coefficients': coefficients,
+                'intercept': intercept,
+                'score': score,
+                'message': '线性回归模型训练成功'
+            }
+            return jsonify(result), 200
+
+        elif request_type == 'predict':
+            # 获取预测输入数据
+            predict_data = data['predictValues']
+            model_path = 'models/lin_reg.pkl'
+
+            print(predict_data)
+
+            # 确保模型文件存在
+            if not os.path.exists(model_path):
+                return jsonify({'error': '模型尚未训练，请先训练模型'}), 400
+
+            # 加载训练好的模型
+            with open(model_path, 'rb') as f:
+                print('模型加载成功')
+                lin_reg = pickle.load(f)
+
+            # 将预测数据转换为pandas DataFrame
+            predict_df = pd.DataFrame([predict_data])
+            print(predict_df)
+            # 预测
+            try:
+                prediction = lin_reg.predict(predict_df)
+                result = {
+                    'prediction': prediction[0],
+                    'message': '预测成功完成'
+                }
+            except Exception as e:
+                result = {
+                    'error': str(e),
+                    'message': '预测失败'
+                }
+
+            return jsonify(result), 200
+
+        else:
+            return jsonify({'error': '请求类型不明确，应为train或predict'}), 400
+
+    except Exception as e:
+        # 异常处理
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':
