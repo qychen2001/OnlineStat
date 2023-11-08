@@ -19,7 +19,6 @@
             </template>
             <el-menu-item-group title="分类">
               <el-menu-item index="2-1">决策树</el-menu-item>
-              <el-menu-item index="2-2">Logistic回归</el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="回归">
               <el-menu-item index="2-3">线性回归</el-menu-item>

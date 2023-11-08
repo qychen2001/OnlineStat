@@ -103,7 +103,7 @@ export default {
 .el-main {
   color: #409eff;
   text-align: center;
-  display: flex;
+  //display: flex;
   align-items: center;
   /* 垂直居中 */
 }
